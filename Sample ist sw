@@ -1,0 +1,127 @@
+https://youtu.be/MQ8t2bHtGlg (SQL server)
+https://www.youtube.com/watch?v=6y65Qf8GzcI (update)
+
+LOGIN
+ try
+            {
+                sqlcon.Open();
+                SqlDataAdapter sqlda = new SqlDataAdapter("SELECT COUNT(*) FROM logic WHERE username='" + txtun.Text + "'AND password ='" + txtpw.Text + "'", sqlcon);
+                DataTable dttab = new DataTable();
+                sqlda.Fill(dttab);
+                if (dttab.Rows[0][0].ToString() == "1")
+                {
+                    SqlDataAdapter sqldaa = new SqlDataAdapter();
+                    MessageBox.Show("Access granted");
+                    frmMain fm = new frmMain();
+                    this.Hide();
+                    fm.ShowDialog();
+                    sqlcon.Close();
+                }
+                else
+                {
+                    MessageBox.Show("Incorrect username or password");
+                }
+
+GenID
+
+if (conn.State.ToString() == "Closed")
+            {
+                conn.Open();
+            }
+            String sel = "SELECT COUNT (StuID) FROM StudentDet";
+            SqlCommand sqlcom = new SqlCommand(sel, conn);
+
+            int x = Convert.ToInt32(sqlcom.ExecuteScalar());
+            int genid = x + 1;
+            txtsid.Text = "S00" + genid.ToString();
+            conn.Close();
+
+ADD
+
+try
+            {
+                string sql = "insert into StudentDet(StuID,name,address,dateofbirth,mail,contact) values ('" + txtsid.Text + "','" + txtname.Text + "','" + txtadd.Text + "','" + Convert.ToDateTime(txtdob.Text) + "','" + txtmail.Text + "','" + Convert.ToInt32(txtno.Text) + "')";
+                
+                SqlCommand sqlcm = new SqlCommand();
+                sqlcm.Connection = conn;
+                sqlcm.CommandType = CommandType.Text;
+                sqlcm.CommandText = sql;
+
+                conn.Open();
+                sqlcm.ExecuteNonQuery();
+                conn.Close();
+                MessageBox.Show("Student Successfully Added");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+
+SEARCH
+
+sqlcon.Open();
+            string a = txtsid.Text;
+            SqlDataAdapter sqld = new SqlDataAdapter("SELECT*FROM StudentDet WHERE StuID='" + a + "'", sqlcon);
+            DataTable dtt = new DataTable();
+            sqld.Fill(dtt);
+            dgv.DataSource = dtt;
+            sqlcon.Close();
+
+UPDATE
+
+ DataGridViewRow ndr = dgv.Rows[indexRow];
+            ndr.Cells[0].Value = txtsid.Text;
+            ndr.Cells[1].Value = txtname.Text;
+            ndr.Cells[2].Value = txtadd.Text;
+            ndr.Cells[3].Value = txtdob.Text;
+            ndr.Cells[4].Value = txtmail.Text;
+            ndr.Cells[5].Value = txtcont.Text;
+
+            string t = ("UPDATE StudentDet SET StuID='" + txtsid.Text + "',name='" + txtname.Text + "',address='" + txtadd.Text + "',dateofbirth='" + txtdob.Text + "',mail='" + txtmail.Text + "',contact='" + txtcont.Text + "' WHERE StuID='" + txtsid.Text + "'");
+            SqlConnection sqlcon = new SqlConnection(@"Data Source=(LocalDB)\v11.0;AttachDbFilename=D:\IAS sample\Student Mang Sys\Student Mang Sys\student.mdf;Integrated Security=True");
+            SqlCommand sqlcom = new SqlCommand(t);
+            sqlcom.Connection = sqlcon;
+            sqlcom.CommandType = CommandType.Text;
+            sqlcom.CommandText = t;
+            sqlcon.Open();
+            sqlcom.ExecuteNonQuery();
+            sqlcon.Close();
+            MessageBox.Show("The details of the Student "+txtsid.Text+" has been successfully updated" );
+
+DGV CELL CLICK
+
+ int indexRow;
+        private void dgv_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            indexRow = e.RowIndex;
+            DataGridViewRow row = dgv.Rows[indexRow];
+
+            txtsid.Text = row.Cells[0].Value.ToString();
+            txtname.Text = row.Cells[1].Value.ToString();
+            txtadd.Text = row.Cells[2].Value.ToString();
+            txtdob.Text = row.Cells[3].Value.ToString();
+            txtmail.Text = row.Cells[4].Value.ToString();
+            txtcont.Text = row.Cells[5].Value.ToString();
+            btnupdd.Enabled = true;
+
+DELETE
+
+string sqlStatement = "DELETE FROM StudentDet WHERE StuID ='" + txtsid.Text + "'";
+
+            connection.Open();
+            SqlCommand cmd = new SqlCommand(sqlStatement, connection);
+            cmd.CommandType = CommandType.Text;
+            cmd.ExecuteNonQuery();
+            MessageBox.Show("Record Successfully Deleted");
+            dgv.Refresh();
+            txtsid.Text = "";
+            connection.Close();
+
+REFRESH DGV
+
+ con.Open();
+            SqlDataAdapter sqlda = new SqlDataAdapter("SELECT*FROM StudentDet", con);
+            DataTable dt = new DataTable();
+            sqlda.Fill(dt);
+            dgv.DataSource = dt;
+
